@@ -65,7 +65,8 @@ def pregunta_03():
     Especificación del pipeline y entrenamiento
     -------------------------------------------------------------------------------------
     """
-
+    
+    # Importe make_column_selector
     # Importe make_column_selector
     # Importe make_column_transformer
     # Importe SelectKBest
@@ -81,14 +82,15 @@ def pregunta_03():
     from sklearn.pipeline import Pipeline
     from sklearn.preprocessing import OneHotEncoder
 
-    pipeline = ____(
+    pipeline = Pipeline(
         steps=[
             # Paso 1: Construya un column_transformer que aplica OneHotEncoder a las
             # variables categóricas, y no aplica ninguna transformación al resto de
             # las variables.
+            #OneHotEncoder: vuelve variables categoricas en valores numericos
             (
                 "column_transfomer",
-                 make_column_transformer(
+                make_column_transformer(
                     (
                         OneHotEncoder(),
                         make_column_selector(dtype_include=object),
@@ -111,16 +113,16 @@ def pregunta_03():
     )
 
     # Cargua de las variables.
-    X_train, _, y_train, _ = pregunta_02()
+    X_train, X_test, y_train, y_test = pregunta_02()
+
 
     # Defina un diccionario de parámetros para el GridSearchCV. Se deben
     # considerar valores desde 1 hasta 11 regresores para el modelo
-    param_grid ={"selectkbest__k": np.arange(1 , 12, 1) }
-    
+    param_grid = {"selectkbest__k": np.arange(1 , 12, 1) }
     # Defina una instancia de GridSearchCV con el pipeline y el diccionario de
     # parámetros. Use cv = 5, y como métrica de evaluación el valor negativo del
-    # error cuadrático medio.
-    gridSearchCV= GridSearchCV(
+    # error cuadrático medio.                   
+    gridSearchCV = GridSearchCV(
         estimator=pipeline,
         param_grid= param_grid,
         cv=5,
@@ -136,6 +138,7 @@ def pregunta_03():
     return gridSearchCV
 
 
+
 def pregunta_04():
     """
     Evaluación del modelo
@@ -144,6 +147,7 @@ def pregunta_04():
 
     # Importe mean_squared_error
     from sklearn.metrics import mean_squared_error
+
     # Obtenga el pipeline optimo de la pregunta 3.
     gridSearchCV = pregunta_03()
 
@@ -166,5 +170,6 @@ def pregunta_04():
         y_test,
         y_test_pred,
     ).round(2)
+
     # Retorne el error cuadrático medio para entrenamiento y prueba
     return mse_train, mse_test
